@@ -1,5 +1,5 @@
 var say = require('say');
 
-var text = process.env.TEXT || 'Say hello to my little friend';
+var text = process.env.TEXT || 'Say hello Jose Gato';
 
 say.speak(null, text);
