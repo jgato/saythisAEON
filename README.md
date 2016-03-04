@@ -13,3 +13,8 @@ Data is received in a json like this:
 ```
 
 Other different document will say hello to unknown person.
+
+
+## License
+
+Opensource licence Apache, basically do whatever you want with the code ;)
