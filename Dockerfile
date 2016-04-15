@@ -11,10 +11,11 @@ COPY package.json /usr/src/app/
 RUN npm install
 
 RUN apt-get install -y alsa-utils libasound2-dev festival festvox-kallpc16k
-RUN alias node='nodejs'
+RUN apt-get install -y pulseaudio
+RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 # Bundle app source
 COPY . /usr/src/app
 
-CMD [ "nodejs", "server.js" ]
+CMD [ "npm", "start" ]
 
