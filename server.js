@@ -103,7 +103,7 @@ else if (!config.SUB_URL) {
 
 client = new Client();
 
-if (config.YOUR_ID === "" || config.YOUR_ID === null) {
+if (!config.YOUR_ID || config.YOUR_ID === "" || config.YOUR_ID === null) {
   console.log("Ok, it seems this is your first time, lets register your agent \
               AEON");
 
