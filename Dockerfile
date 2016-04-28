@@ -4,14 +4,18 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # installing the stuff
-RUN apt-get update
-RUN apt-get install -y nodejs npm
+RUN apt-get update && apt-get install -y \
+	nodejs \
+	npm \
+	alsa-utils \
+	libasound2-dev \
+	festival \
+	festvox-kallpc16k \
+	pulseaudio
 
 COPY package.json /usr/src/app/
 RUN npm install
 
-RUN apt-get install -y alsa-utils libasound2-dev festival festvox-kallpc16k
-RUN apt-get install -y pulseaudio
 RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 # Bundle app source
