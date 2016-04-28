@@ -10,9 +10,10 @@
   },
   "version": "0.0.1",
   "dependencies": {
-    "say" : "^0.6.0"
+    "say" : "^0.6.0",
+    "node-rest-client": "*"
   },
-  "license": "Apache2",
+  "license": "Apache-2.0",
   "contributors": [{
         "name": "Jose Gato Luis",
         "email": "jose.gato@atos.net"
