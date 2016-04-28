@@ -29,12 +29,11 @@ var say = require('say');
 var fs = require('fs');
 
 var control = function control(msg) {
-  subscription = sdk.getSubscription();
-
+  if (msg.code == 250)
+    console.log("Ok, we are subscribed, waiting for messages");
 };
 
 var received = function received(msg) {
-  console.log("Received: ", msg);
   if (msg.name) {
     console.log("hello ", msg.name);
     if (audioEnabled)
@@ -79,9 +78,7 @@ var subscribeMe = function subscribeMe(subscriptionData) {
   sdk = new AeonSDK(config.SUB_URL, subscriptionData);
 
   sdk.subscribe(received, control);
-  console.log("Ok, we are subscribed, waiting for messages");
-
-
+  
 }
 
 var saveConfig = function saveConfig() {
@@ -91,7 +88,6 @@ var saveConfig = function saveConfig() {
       console.log(err.message);
       return;
     }
-    console.log('Configuration saved successfully.')
   });
 }
 
