@@ -25,7 +25,7 @@ But how to automatically deploy this service to have your devices "located" in a
 
 # How to use it
 
-Just build and run the container in your host.
+To execute this container is, currently, quite complicated because of the need of sharing the sound card beteween host and containers. Depending on where you run your container this could be easier. (Working on it)
 
 
 ## Accessing sound card inside the container
@@ -57,14 +57,26 @@ or
 
 On some distributions, it may be necessary to completely restart your computer. You can confirm that the settings have successfully been applied running pax11publish | grep -Eo 'tcp:[^ ]*'. You should see something like tcp:myhostname:4713.
 
-Then run the container passing the variables: 
+Now you can run the container but you will need the ip address of your host, where pulseaudio server is running. This command should help you with that, but you need to know the name of your interface. In **ubuntu** usually eno1:
+
+```
+ifconfig eno1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'
+
+```
+
+
+**Running in ubuntu**
 
 ``` 
 docker run -it \
-      -e PULSE_SERVER=tcp:$(hostname -i):4713 \
-      -e PULSE_COOKIE_DATA=$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*') \i
+      -e PULSE_SERVER=tcp:`ifconfig eno1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'`:4713 \
+      -e PULSE_COOKIE_DATA=$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*') \
       jgato/say-this-aeon 
 ```
+
+**Other distros** just change the interface to guess the host IP address. 
+
+
 
 If it is not working, go inside the container and check you have the cookie and the pulse server variables properly configured. In my computer I was having a problem because hostname command returned 127.0.0.1, pointing to this (loopback) address inside the container is not a good way of connectin to the host ;)
 
