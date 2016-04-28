@@ -39,20 +39,26 @@ Install PulseAudio Preferences. Debian/Ubuntu users can do this:
 ```
     $ sudo apt-get install paprefs
 ```
-    Launch paprefs (PulseAudio Preferences) > "Network Server" tab > Check "Enable network access to local sound devices" (you may check "Don't require authentication" to avoid mounting cookie file described below).
 
-    Restart PulseAudio
+Launch paprefs (PulseAudio Preferences) > "Network Server" tab > Check "Enable network access to local sound devices" (you may check "Don't require authentication" to avoid mounting cookie file described below).
+
+Restart PulseAudio
+
 ```
     $ sudo service pulseaudio restart
 ```
-    or
+
+or
+
 ``` 
     $ pulseaudio -k
     $ pulseaudio --start
 ```
-    On some distributions, it may be necessary to completely restart your computer. You can confirm that the settings have successfully been applied running pax11publish | grep -Eo 'tcp:[^ ]*'. You should see something like tcp:myhostname:4713.
+
+On some distributions, it may be necessary to completely restart your computer. You can confirm that the settings have successfully been applied running pax11publish | grep -Eo 'tcp:[^ ]*'. You should see something like tcp:myhostname:4713.
 
 Then run the container passing the variables: 
+
 ``` 
 docker run -it \
       -e PULSE_SERVER=tcp:$(hostname -i):4713 \
