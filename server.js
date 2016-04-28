@@ -29,7 +29,6 @@ var say = require('say');
 var fs = require('fs');
 
 var control = function control(msg) {
-  console.log("Control: ", msg);
   subscription = sdk.getSubscription();
 
 };
@@ -38,10 +37,12 @@ var received = function received(msg) {
   console.log("Received: ", msg);
   if (msg.name) {
     console.log("hello ", msg.name);
-    say.speak(null, "hello " + msg.name);
+    if (audioEnabled)
+      say.speak(null, "hello " + msg.name);
   } else {
     console.log("hello unknown");
-    say.speak(null, "hello unknown");
+    if (audioEnabled)
+      say.speak(null, "hello unknown");
   }
 };
 
@@ -101,6 +102,13 @@ else if (!config.SUB_URL) {
   return;
 }
 
+var audioEnabled = false;
+
+if (process.env.GREETINGS_AUDIO && process.env.GREETINGS_AUDIO == "true")
+  audioEnabled = true;
+else
+  console.log("No audio enabled, only text mode. See instructions to enable audio");
+
 client = new Client();
 
 if (!config.YOUR_ID || config.YOUR_ID === "" || config.YOUR_ID === null) {
@@ -116,7 +124,6 @@ if (!config.YOUR_ID || config.YOUR_ID === "" || config.YOUR_ID === null) {
       config.YOUR_ID = registerData.result[0].id;
       config.YOUR_DESC = registerData.result[0].desc;
 
-      console.log(config);
       subscriptionData = {
         "id": config.YOUR_ID,
         "desc": config.YOUR_DESC
