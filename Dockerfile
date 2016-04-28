@@ -20,6 +20,7 @@ RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 # Bundle app source
 COPY . /usr/src/app
+RUN echo '{}' > /usr/src/app/config.json
 
 CMD [ "npm", "start" ]
 
