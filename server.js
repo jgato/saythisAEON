@@ -83,6 +83,23 @@ var subscribeMe = function subscribeMe(subscriptionData) {
 
 }
 
+var saveConfig = function saveConfig() {
+  fs.writeFile('./config.json', JSON.stringify(config), function (err) {
+    if (err) {
+      console.log('There has been an error saving your configuration data.');
+      console.log(err.message);
+      return;
+    }
+    console.log('Configuration saved successfully.')
+  });
+}
+
+if (process.env.SUB_URL)
+  config.SUB_URL = process.env.SUB_URL;
+else if (!config.SUB_URL) {
+  console.log("Error no SUB_URL, check config.json or set SUB_URL env variable");
+  return;
+}
 
 client = new Client();
 
@@ -99,21 +116,14 @@ if (config.YOUR_ID === "" || config.YOUR_ID === null) {
       config.YOUR_ID = registerData.result[0].id;
       config.YOUR_DESC = registerData.result[0].desc;
 
-      fs.writeFile('./config.json', JSON.stringify(config), function (err) {
-        if (err) {
-          console.log('There has been an error saving your configuration data.');
-          console.log(err.message);
-          return;
-        }
-        console.log('Configuration saved successfully.')
-      });
-
       console.log(config);
       subscriptionData = {
         "id": config.YOUR_ID,
         "desc": config.YOUR_DESC
       };
       subscribeMe(subscriptionData);
+
+      saveConfig();
     }
 
   });
@@ -127,4 +137,5 @@ if (config.YOUR_ID === "" || config.YOUR_ID === null) {
   };
 
   subscribeMe(subscriptionData);
+  saveConfig();
 }
