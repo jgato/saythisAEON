@@ -65,4 +65,4 @@ If it is not working, go inside the container and check you have the cookie and 
 
 ## License
 
-Opensource licence Apache, basically do whatever you want with the code ;)
+Opensource licence Apache v3
