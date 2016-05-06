@@ -27,6 +27,7 @@ var config = require('./config.json');
 var Client = require('node-rest-client').Client;
 var say = require('say');
 var fs = require('fs');
+var moment = require('moment-timezone');
 
 var control = function control(msg) {
   if (msg.code == 250)
@@ -73,12 +74,46 @@ var registerAgent = function registerAteng(next) {
   });
 }
 
+var sendHeartBeat = function sendHeartBeat(next) {
+  var heartBeatMsg = {
+    'id': config.YOUR_ID,
+    'msg': 'alive',
+    'timestamp': moment(Date.now()).tz("Europe/Madrid").format()
+  }
+
+  var args = {
+    data: heartBeatMsg,
+    headers: {
+      "Content-Type": "application/json",
+    }
+  };
+
+  client.post(config.PUB_URL, args, function (data, response) {
+    // parsed response body as js object 
+    if (response.statusCode == 200) {
+      next(true);
+    } else {
+      next(false);
+    }
+
+  });
+
+}
+var heartBeatTimer = function heartBeatTimer() {
+
+  setInterval(function () {
+    sendHeartBeat(function (status) {
+      console.log("heartbeat send it ", status)
+    });
+  }, 5000)
+
+}
+
 var subscribeMe = function subscribeMe(subscriptionData) {
 
   sdk = new AeonSDK(config.SUB_URL, subscriptionData);
-
   sdk.subscribe(received, control);
-  
+
 }
 
 var saveConfig = function saveConfig() {
@@ -95,6 +130,13 @@ if (process.env.SUB_URL)
   config.SUB_URL = process.env.SUB_URL;
 else if (!config.SUB_URL) {
   console.log("Error no SUB_URL, check config.json or set SUB_URL env variable");
+  return;
+}
+
+if (process.env.PUB_URL)
+  config.PUB_URL = process.env.PUB_URL;
+else if (!config.PUB_URL) {
+  console.log("Error no PUB_URL, check config.json or set PUB_URL env variable");
   return;
 }
 
@@ -125,7 +167,7 @@ if (!config.YOUR_ID || config.YOUR_ID === "" || config.YOUR_ID === null) {
         "desc": config.YOUR_DESC
       };
       subscribeMe(subscriptionData);
-
+      heartBeatTimer();
       saveConfig();
     }
 
@@ -140,5 +182,6 @@ if (!config.YOUR_ID || config.YOUR_ID === "" || config.YOUR_ID === null) {
   };
 
   subscribeMe(subscriptionData);
+  heartBeatTimer();
   saveConfig();
 }
