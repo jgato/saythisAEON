@@ -25,18 +25,45 @@
 
 //var AeonSDK = require('../lib/aeonSDK.js');
 var AeonSDK = require('aeonsdk-node');
+var colog = require('colog');
 
+var effects= [ 'bold', 'underline', 'strike', 'inverse' ] ;
+var colors = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'];
+
+var ids = {};
 
 var control = function control(msg){
   console.log("Control: ", msg);
 }
 
 var received = function received(msg) {
-  console.log("Device id ", msg.id, " msg ", msg.msg, " timestamp ", msg.timestamp);
+  var format = ids[msg.id];
+
+  if (!format) {
+    console.log("new id");
+    ids[msg.id] = getFormat();
+    format = ids[msg.id];
+  }
+    
+  console.log("Device id ", colog.apply(msg.id, format), " msg ", msg.msg, " timestamp ", msg.timestamp);
 };
 
 
+var random = function random(high, low){
+  return Math.floor(Math.random() * (high - low + 1) + low);
+}
+var getColor = function getColor(){
+  return colors[random(6,0)];
+}
 
+var getEffect = function getEffect(){
+  return effects[random(3,0)];
+}
+
+var getFormat = function getFormat(){
+  
+  return [getColor(), getEffect()]
+}
 
 if (process.argv.length != 3) {
   console.log("Usage: node.js receiveheartbeat.js sub_url_heartbeat");

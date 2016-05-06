@@ -11,6 +11,7 @@
     "aeonsdk-node": "https://gitlab.atosresearch.eu/ari/aeon-sdk/raw/master/SDK/releases/nodejs/AeonSDK-nodejs_0.2.1.tgz",
     "say" : "^0.6.0",
     "moment-timezone": "*",
+    "colog": "*",
     "node-rest-client": "*"
   },
   "license": "Apache-2.0",
