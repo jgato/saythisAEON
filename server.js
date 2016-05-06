@@ -62,7 +62,7 @@ var registerAgent = function registerAteng(next) {
   var id = generateUUID();
   var desc = "say this aeon agent " + id;
 
-  client.get(config.SUB_URL + "?id=" + id + "&desc=" + desc, function (data, response) {
+  client.get(config.SUB_URL_GREETINGS + "?id=" + id + "&desc=" + desc, function (data, response) {
 
 
     if (response.statusCode == 200) {
@@ -80,6 +80,7 @@ var sendHeartBeat = function sendHeartBeat(next) {
     'msg': 'alive',
     'timestamp': moment(Date.now()).tz("Europe/Madrid").format()
   }
+  console.log(heartBeatMsg);
 
   var args = {
     data: heartBeatMsg,
@@ -88,7 +89,7 @@ var sendHeartBeat = function sendHeartBeat(next) {
     }
   };
 
-  client.post(config.PUB_URL, args, function (data, response) {
+  client.post(config.PUB_URL_HEARTBEAT, args, function (data, response) {
     // parsed response body as js object 
     if (response.statusCode == 200) {
       next(true);
@@ -111,7 +112,7 @@ var heartBeatTimer = function heartBeatTimer() {
 
 var subscribeMe = function subscribeMe(subscriptionData) {
 
-  sdk = new AeonSDK(config.SUB_URL, subscriptionData);
+  sdk = new AeonSDK(config.SUB_URL_GREETINGS, subscriptionData);
   sdk.subscribe(received, control);
 
 }
@@ -126,17 +127,21 @@ var saveConfig = function saveConfig() {
   });
 }
 
-if (process.env.SUB_URL)
-  config.SUB_URL = process.env.SUB_URL;
-else if (!config.SUB_URL) {
-  console.log("Error no SUB_URL, check config.json or set SUB_URL env variable");
+/*
+ * Checkingj env variables
+ */
+ 
+if (process.env.SUB_URL_GREETINGS)
+  config.SUB_URL_GREETINGS = process.env.SUB_URL_GREETINGS;
+else if (!config.SUB_URL_GREETINGS) {
+  console.log("Error no SUB_URL_GREETINGS, check config.json or set SUB_URL_GREETINGS env variable");
   return;
 }
 
-if (process.env.PUB_URL)
-  config.PUB_URL = process.env.PUB_URL;
-else if (!config.PUB_URL) {
-  console.log("Error no PUB_URL, check config.json or set PUB_URL env variable");
+if (process.env.PUB_URL_HEARTBEAT)
+  config.PUB_URL_HEARTBEAT = process.env.PUB_URL_HEARTBEAT;
+else if (!config.PUB_URL_HEARTBEAT) {
+  console.log("Error no PUB_URL_HEARTBEAT, check config.json or set PUB_URL_HEARTBEAT env variable");
   return;
 }
 

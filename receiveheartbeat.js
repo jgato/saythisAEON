@@ -39,7 +39,7 @@ var received = function received(msg) {
 
 
 if (process.argv.length != 3) {
-  console.log("Usage: node.js receiveheartbeat.js sub_url");
+  console.log("Usage: node.js receiveheartbeat.js sub_url_heartbeat");
   return;
 }
 

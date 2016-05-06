@@ -1,6 +1,6 @@
 # saythisAEON
 
-Subscribe to an AEON's entity to say hello to received names. Just playing with docker to deploy containers with Rancher, resin.io, codeship, etc. 
+Subscribe to an AEON's entity to say hello to received names. Publish into an AEON's channel to send like heartbeats. Just playing with docker to deploy containers with Rancher, resin.io, codeship, etc. 
 
 Are you wondering what is this AEON? Basically, **it is a cloud messaging service (pub/sub)**. Try it [here](http://130.206.116.137:8000/). If this instance is no longer working contact with the developers for further information and current status of the project: Jose Gato Luis <jose.gato@atos.net>, Javier Garcia <javier.garcia@atos.net>, Elisa Herrmann <elisa.herrmann@atos.net> 
 
@@ -11,7 +11,13 @@ More info about the project [here](https://gitlab.atosresearch.eu/ari/aeon-api).
 
 ## How it works?
 
-The firs time, the agent is registered in a communication channel of the AEON's platform (it is subscribed). When someone publish messages in this channel, these will be received by the agent.
+The firs time, the agent is registered in a communication channel of the AEON's platform (it is subscribed). You will see log like:
+
+```
+Ok, it seems this is your first time, lets register your agent into AEON
+```
+
+Now it is registered in AEON and it is subscribed in the "Greetings app". When someone publish messages in this channel, these will be received by the agent.
 
 Data is received/sent in a json like this:
 
@@ -25,6 +31,17 @@ The agent will say: "hello Jose"
 
 Other different document (other format, incorrect) will say "hello unknown". Easy, right?
 
+At the same time, the agent is publishing in a HeartBeats channel sending messages like:
+
+```javascript
+{ id: '03f018cd-adb8-45bc-c336-b64c36679bc6',
+msg: 'alive',
+timestamp: '2016-05-06T11:44:32+02:00' }
+
+```
+You could subscribe in this channel (anywhere) to control your devices.
+
+
 # why this?
 
 Why this "so simple" program? Ok, it is just a proof of concept about deploying services, that could be very useful for IoT environments. This service will allow to execute something in all your "things" (maybe 1000 raspberris), by the moment something that say hello to people. It integrates also with AEON, so automatically allows you to have all your "things" integrated in this IoT platform, you see your devices connected.
@@ -33,15 +50,18 @@ But how to automatically deploy this service to have your devices "located" in a
 
 # How to use it
 
-The easiest way not enable audio greetings. So you just need to run the container passing environmental variable to register
-the agent with an AEON's channel. Something like this:
+This container will make use of two channels. One to receive names for greetings, and other send heartbetas. So it will need to env_variables: SUB_URL_GREETINGS and PUB_URL_HEARTBEAT.
 
 ```
-docker run -it -e SUB_URL=http://130.206.116.137:3000/subscribe/e41b3e-506f-4d88-b9d0-e4225b69f8fe jgato/say-this-aeon
+docker run -it -e SUB_URL_GREETINGS=http://130.206.116.137:3000/subscribe/e41b3e-506f-4d88-b9d0-e4225b69f8fe \
+-e PUB_URL_HEARTBEAT=http://130.206.116.137:3000/publish/f51643b1-9c7f-4c08-9c2d-f396affe5297 \
+jgato/say-this-aeon
 ```
-What is the SUB_URL I need to run a container? See AEON's documentation about creating a [communication channel](http://130.206.116.137:3000/public/doc/html/quickstart/getachannel.html#documentation-tutorial-getchannel). You can try the SUB_URL in the example, if you are lucky (I didnt delete it) you can use it.
 
-What if you want to ear in your speakers "hello name"? This is more complicated because of the need of sharing the sound card between host and containers. 
+What are these urls I need to run a container? See AEON's documentation about creating a [communication channel](http://130.206.116.137:3000/public/doc/html/quickstart/getachannel.html#documentation-tutorial-getchannel). You can try these urls in the example, if you are lucky (I didnt delete it) you can use it.
+
+
+What if you want to ear in your speakers "hello name"? This is more complicated because of the need of sharing the sound card between host and containers. Follow the next instructions and enable the variable GREETINGS_AUDIO=true
 
 ## Accessing sound card inside the container
 

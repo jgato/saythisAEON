@@ -34,7 +34,7 @@ var control = function control(msg){
 
 
 if (process.argv.length != 4) {
-  console.log("Usage: node.js publishmessage pub_url string_with_a_name");
+  console.log("Usage: node.js publishmessage pub_url_greetings string_with_a_name");
   return;
 }
 
