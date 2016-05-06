@@ -80,7 +80,6 @@ var sendHeartBeat = function sendHeartBeat(next) {
     'msg': 'alive',
     'timestamp': moment(Date.now()).tz("Europe/Madrid").format()
   }
-  console.log(heartBeatMsg);
 
   var args = {
     data: heartBeatMsg,
