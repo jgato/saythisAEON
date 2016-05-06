@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
 	pulseaudio
 
 COPY package.json /usr/src/app/
+RUN npm config set strict-ssl false
 RUN npm install
 
 RUN ln -s /usr/bin/nodejs /usr/bin/node
