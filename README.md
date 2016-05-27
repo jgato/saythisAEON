@@ -53,8 +53,9 @@ But how to automatically deploy this service to have your devices "located" in a
 This container will make use of two channels. One to receive names for greetings, and other send heartbetas. So it will need to env_variables: SUB_URL_GREETINGS and PUB_URL_HEARTBEAT.
 
 ```
-docker run -it -e SUB_URL_GREETINGS=http://130.206.116.137:3000/subscribe/e41b3e-506f-4d88-b9d0-e4225b69f8fe \
--e PUB_URL_HEARTBEAT=http://130.206.116.137:3000/publish/f51643b1-9c7f-4c08-9c2d-f396affe5297 \
+docker run -it -e SUB_URL_GREETINGS=http://130.206.113.59:3000/subscribe/e41b319e-506f-4d88-b9d0-e4225b69f8fe \
+-e PUB_URL_HEARTBEAT=http://130.206.113.59:3000/publish/f51643b1-9c7f-4c08-9c2d-f396affe5297 \
+-e GREETINGS_AUDIO=false \
 jgato/say-this-aeon
 ```
 
@@ -104,9 +105,9 @@ ifconfig eno1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'
 
 ``` 
 docker run -it \
-      -e SUB_URL_GREETINGS=http://130.206.116.137:3000/subscribe/e41b319e-506f-4d88-b9d0-e4225b69f8fe
-      -e PUB_URL_HEARTBEAT=http://130.206.116.137:3000/publish/f51643b1-9c7f-4c08-9c2d-f396affe5297
-      -e GREETINGS_AUDIO=true
+-e SUB_URL_GREETINGS=http://130.206.113.59:3000/subscribe/e41b319e-506f-4d88-b9d0-e4225b69f8fe \
+-e PUB_URL_HEARTBEAT=http://130.206.113.59:3000/publish/f51643b1-9c7f-4c08-9c2d-f396affe5297 \
+      -e GREETINGS_AUDIO=true \
       -e PULSE_SERVER=tcp:`ifconfig eno1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'`:4713 \
       -e PULSE_COOKIE_DATA=$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*') \
       jgato/say-this-aeon 
