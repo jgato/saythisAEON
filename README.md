@@ -1,38 +1,25 @@
-# Description
+# saythisAEON
 
+** I consider the experiment finished, I will continue it as an internal project with other different objectives **
 
-This ghost is part of the [IoT Ghost Platform]() from ATOS. It is intended to be 
-basic CORE ghost that needs to run in any IoT device connected to the platform. By
-the moment (experimenting/designing phase) it covers really basic functionalities
-. It could be even considered as a first hello world, but it makes use of some
-basic concepts of the platform, such as using AEON entities for communications 
-(ex. heartbeat) and to "encapsulate" applications (ex. greetings). 
+Subscribe to an AEON's entity to say hello to received names. Publish into an AEON's channel to send like heartbeats. Just playing with docker to deploy containers with Rancher, resin.io, codeship, etc. 
 
-What functionalities are covered by the ghost.
- * Subscribe to an AEON's entity to say hello to received names. Greetings application.
- * Publish into an AEON's channel to send like heartbeats. Heartbeat
- 
-The IoT Ghost Platform is based on docker to deploy ghosts over your connected
-IoT devices. So, this ghost has been dockerized.
+Are you wondering what is this AEON? Basically, **it is a cloud messaging service (pub/sub)**. Try it [here](http://130.206.116.137:8000/). If this instance is no longer working contact with the developers for further information and current status of the project: Jose Gato Luis <jose.gato@atos.net>, Javier Garcia <javier.garcia@atos.net>, Elisa Herrmann <elisa.herrmann@atos.net> 
 
-*Are you wondering what is this AEON?* Basically, **it is a cloud messaging service (pub/sub)**. Try it [here](http://aeon.atosresearch.eu/). If this instance is no longer working contact with the developers for further information and current status of the project: Jose Gato Luis <jose.gato@atos.net>, Javier Garcia <javier.garcia@atos.net>, Elisa Herrmann <elisa.herrmann@atos.net> 
+More info about the project [here](https://gitlab.atosresearch.eu/ari/aeon-api).
 
-More info about the project [AEON](https://gitlab.atosresearch.eu/ari/aeon-api).
-
-*Important*: I started this ghost using [text2spech](https://github.com/resin-io/text2speech) 
-for audio greetings.
+*Important*: I started using [text2spech](https://github.com/resin-io/text2speech) for audio.
 
 
 ## How it works?
 
-The firs time the agent runs, it is registered in a communication channel of the IoT
-Ghosts Platform (actually,  subscribed AEON channel) . You will see log like:
+The firs time, the agent is registered in a communication channel of the AEON's platform (it is subscribed). You will see log like:
 
 ```
 Ok, it seems this is your first time, lets register your agent into AEON
 ```
 
-Now it is registered in the platform and it is subscribed in the "Greetings app". When someone publish messages in this channel, these will be received by the ghost.
+Now it is registered in AEON and it is subscribed in the "Greetings app". When someone publish messages in this channel, these will be received by the agent.
 
 Data is received/sent in a json like this:
 
@@ -42,12 +29,11 @@ Data is received/sent in a json like this:
 }
 
 ```
-The ghost will say: "hello Jose"
+The agent will say: "hello Jose"
 
-Other different document (other format, incorrect) will say "hello unknown". 
+Other different document (other format, incorrect) will say "hello unknown". Easy, right?
 
-At the same time, the ghost will be publishing heartbeats to the platform (actually,
-publishing trough an AEON's channel) sending messages like:
+At the same time, the agent is publishing in a HeartBeats channel sending messages like:
 
 ```javascript
 { id: '03f018cd-adb8-45bc-c336-b64c36679bc6',
@@ -55,21 +41,18 @@ msg: 'alive',
 timestamp: '2016-05-06T11:44:32+02:00' }
 
 ```
-Anything/anybody subscribed to this last channel (anywhere) will receive heartbeats
-from all devices. **An easy/good starting point to have something like your's devices list, with
-unique identifiers**
-
-# Benefits
-
-Why this "so simple" ghost? Ok, it is just a proof of concept about deploying services that could be very useful for IoT environments. This service will allow to execute something in all your "things" (maybe 1000 raspberris), by the moment something that say hello to people. Also, It integrates with the
-IoT Ghost Platform, so automatically allows you to have all your "things" integrated in this IoT platform, you see your devices connected.
+You could subscribe in this channel (anywhere) to control your devices.
 
 
-# Technical description 
+# why this?
 
-(how to execute the container)
+Why this "so simple" program? Ok, it is just a proof of concept about deploying services, that could be very useful for IoT environments. This service will allow to execute something in all your "things" (maybe 1000 raspberris), by the moment something that say hello to people. It integrates also with AEON, so automatically allows you to have all your "things" integrated in this IoT platform, you see your devices connected.
 
-This container will make use of two channels from the platform. One to receive names for greetings, and other send heartbeats. So it will need to env_variables: SUB_URL_GREETINGS and PUB_URL_HEARTBEAT.
+But how to automatically deploy this service to have your devices "located" in a common platform? This is the second part of the experiment, we will use an existing platform called resin.io, but also, we will try to create our own platform using something like rancher for this first stage of deploying services.
+
+# How to use it
+
+This container will make use of two channels. One to receive names for greetings, and other send heartbetas. So it will need to env_variables: SUB_URL_GREETINGS and PUB_URL_HEARTBEAT.
 
 ```
 docker run -it -e SUB_URL_GREETINGS=http://130.206.113.59:3000/subscribe/e41b319e-506f-4d88-b9d0-e4225b69f8fe \
@@ -78,14 +61,12 @@ docker run -it -e SUB_URL_GREETINGS=http://130.206.113.59:3000/subscribe/e41b319
 jgato/say-this-aeon
 ```
 
-What are these urls I need to run a container? You need to get this urls from the IoT Ghosts Platform
-configuration.. You can try these urls in the example, if you are lucky (I didnt delete it).
+What are these urls I need to run a container? See AEON's documentation about creating a [communication channel](http://130.206.116.137:3000/public/doc/html/quickstart/getachannel.html#documentation-tutorial-getchannel). You can try these urls in the example, if you are lucky (I didnt delete it) you can use it.
 
 
-What if you want to ear in your speakers "hello name", instead of an ugly log? It depends on your device, maybe you only 
-need to set GREETINGS_AUDIO=true in a Raspberry. In my laptop, this is more complicated because of the need of sharing the sound card between host and containers. Follow the next instructions and enable the variable GREETINGS_AUDIO=true
+What if you want to ear in your speakers "hello name"? This is more complicated because of the need of sharing the sound card between host and containers. Follow the next instructions and enable the variable GREETINGS_AUDIO=true
 
-### Accessing sound card inside the container
+## Accessing sound card inside the container
 
 Depending on your OS/distribution you will find problems accessing the sound card inside the container. I have found some instructions about how to proceed. It seems the problem is a conflict between pulseaudio in the host and container, so you have to share pulseaudio in your host:
 
@@ -141,9 +122,7 @@ As you can see now you are enabling audio with GREETINGS_AUDIO=true. It also nee
 
 If it is not working, go inside the container and check you have the cookie and the pulse server variables properly configured. In my computer I was having a problem because hostname command returned 127.0.0.1, pointing to this (loopback) address inside the container is not a good way of connecting to the host ;)
 
-# In use
 
-
-# License
+## License
 
 Opensource licence Apache v2
